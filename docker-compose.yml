@@ -1,0 +1,26 @@
+services:
+  reverse-proxy:
+    image: traefik:v2.11
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--log.level=DEBUG"
+    ports:
+      - 80:80
+      - 8080:8080
+#      - 8443:8443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./logs/:/var/log/traefik/
+#      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+    labels:
+      - "traefik.enable=true"
+
+networks:
+  traefik_default:
+    external: true
