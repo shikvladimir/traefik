@@ -3,8 +3,8 @@ services:
     image: traefik:v3.2.2
     container_name: traefik
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
+#    security_opt:
+#      - no-new-privileges:true
     command:
       - --api.insecure=true
       - --api.dashboard=true
@@ -20,7 +20,7 @@ services:
       - --providers.file.filename=traefik_conf/dynamic_conf.toml
       # Entrypoints (ports) for the routers
       - --entrypoints.web.address=:80
-#      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
 #      - --entrypoints.web.http.redirections.entrypoint.scheme=https
 
       - --entrypoints.websecure.address=:443
@@ -34,6 +34,7 @@ services:
     ports:
       - "80:80/tcp"
       - "80:80/udp"
+      - "80:80"
       - "8000:8000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -52,12 +53,12 @@ services:
 #      - traefik.http.middlewares.redirect-to-non-www-https.redirectregex.permanent=true
 
 #      # replace with _your IP_
-#      - traefik.http.middlewares.api-ipwhitelist.ipwhitelist.sourcerange=0.0.0.0/0
-#      - traefik.http.services.api.loadbalancer.server.port=8000
+      - traefik.http.middlewares.api-ipwhitelist.ipwhitelist.sourcerange=0.0.0.0/0
+      - traefik.http.services.api.loadbalancer.server.port=8000
 #
 #      # Extra middleware (ratelimit, ip whitelisting)
-#      - traefik.http.middlewares.traefik-ratelimit.ratelimit.average=100
-#      - traefik.http.middlewares.traefik-ratelimit.ratelimit.burst=50
+      - traefik.http.middlewares.traefik-ratelimit.ratelimit.average=100
+      - traefik.http.middlewares.traefik-ratelimit.ratelimit.burst=50
 
   whoami:
     image: traefik/whoami:latest
