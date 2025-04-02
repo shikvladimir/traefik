@@ -10,35 +10,32 @@ services:
       - --api.dashboard=true
       - --providers.docker
       - --log.level=DEBUG
-
       - --entrypoints.traefik.address=:8000
 
       - --providers.docker.network=traefik-proxy
       - --providers.docker.exposedByDefault=false
 
       - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-proxy`)
-      - --providers.file.filename=traefik_conf/dynamic_conf.toml
       # Entrypoints (ports) for the routers
       - --entrypoints.web.address=:80
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.websecure.address=:443
+#      - --entrypoints.web.http.redirections.entrypoint.to=websecure
 #      - --entrypoints.web.http.redirections.entrypoint.scheme=https
 
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.websecure.http.tls.certResolver=letsencrypt
-      - --entrypoints.websecure.http.tls.domains[0].main=tonlab.net
-      - --entrypoints.websecure.http.tls.domains[0].sans=*.tonlab.net
-      - --entrypoints.websecure.http3=true
-#      - --entrypoints.api.address=:8000
+#      - --entrypoints.websecure.address=:443
+#      - --entrypoints.websecure.http.tls.certResolver=letsencrypt
+#      - --entrypoints.websecure.http.tls.domains[0].main=tonlab.net
+#      - --entrypoints.websecure.http.tls.domains[0].sans=*.tonlab.net
+#      - --entrypoints.websecure.http3=true
       # Enable the dashboard
       - --api
     ports:
-      - "80:80/tcp"
-      - "80:80/udp"
+#      - "80:80/tcp"
+#      - "80:80/udp"
       - "80:80"
       - "8000:8000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./config/dynamic_conf.toml:/traefik_conf/dynamic_conf.toml  # dynamic traefik configuration
       - ./logs/:/var/log/traefik/
     labels:
       # traefik.enable is required because we don't expose all containers automatically
