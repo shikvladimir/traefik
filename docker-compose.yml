@@ -10,7 +10,7 @@ services:
       - --api.dashboard=true
       - --providers.docker
       - --log.level=DEBUG
-      - --entrypoints.traefik.address=:8080
+      - --entrypoints.traefik.address=:8000
 
       - --providers.docker.network=traefik-proxy
       - --providers.docker.exposedByDefault=false
@@ -31,13 +31,14 @@ services:
 #      - --api
     ports:
       - "80:80/tcp"
-      - "8080:8080"
+      - "8000:8000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./logs/:/var/log/traefik/
     labels:
       # traefik.enable is required because we don't expose all containers automatically
       - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`traefik.local`)
       - traefik.docker.network=traefik-proxy
       - traefik.constraint-label=traefik-proxy
 
@@ -49,11 +50,15 @@ services:
 
 #      # replace with _your IP_
       - traefik.http.middlewares.api-ipwhitelist.ipwhitelist.sourcerange=0.0.0.0/0
-      - traefik.http.services.api.loadbalancer.server.port=8080
+      - traefik.http.services.api.loadbalancer.server.port=8000
 #
 #      # Extra middleware (ratelimit, ip whitelisting)
       - traefik.http.middlewares.traefik-ratelimit.ratelimit.average=100
       - traefik.http.middlewares.traefik-ratelimit.ratelimit.burst=50
+
+      # middlewares auth
+#      - traefik.http.routers.traefik.middlewares=traefik-auth
+#      - traefik.http.middlewares.traefik-auth.basicauth.users=user:password.
 
   whoami:
     image: traefik/whoami:latest
