@@ -8,8 +8,7 @@ services:
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
       - ./config/:/etc/traefik/:ro
-#      - ./certs/:/var/traefik/certs/:rw
-      - ./certs/:/letsencrypt
+      - ./certs/:/var/traefik/certs/:rw
 #    env_file: .env
     restart: unless-stopped
     logging:
