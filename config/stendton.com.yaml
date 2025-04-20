@@ -1,0 +1,17 @@
+http:
+  routers:
+    stendton:
+      rule: "Host(`stendton.com`)"
+      service: stendton
+      priority: 1000
+      entryPoints:
+        - web
+        - websecure
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    stendton:
+      loadBalancer:
+        servers:
+          - url: "http://nginx:80"
