@@ -1,16 +1,22 @@
 services:
   traefik:
-    image: docker.io/library/traefik:3
+    image: traefik:v3
     container_name: traefik
+    restart: unless-stopped
+
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
+
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
       - ./config/:/etc/traefik/:ro
-      - ./certs/:/var/traefik/certs/:rw
-#    env_file: .env
-    restart: unless-stopped
+      - ./certs/:/letsencrypt/:rw
+      - ./logs/:/var/log/traefik/:rw
+
+    networks:
+      - web
+
     logging:
       driver: "json-file"
       options:
@@ -18,6 +24,6 @@ services:
         max-file: "3"
 
 networks:
-  default:
+  web:
     name: web
     external: true
