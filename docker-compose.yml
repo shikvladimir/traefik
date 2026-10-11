@@ -8,6 +8,22 @@ services:
       - "80:80"
       - "443:443"
 
+    command:
+      - "--api.dashboard=true"
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+
+      - "traefik.http.routers.traefik.rule=Host(`stendton.com`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
+
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$REPLACE_WITH_HASH"
+
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
       - ./config/:/etc/traefik/:ro
