@@ -22,7 +22,7 @@ services:
       - "traefik.http.routers.traefik.service=api@internal"
 
       - "traefik.http.routers.traefik.middlewares=traefik-auth"
-      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$REPLACE_WITH_HASH"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$apr1$CWYhYz3u$3ZQjTmwsih.sk2knvR0pz/"
 
     volumes:
       - /run/docker.sock:/run/docker.sock:ro
